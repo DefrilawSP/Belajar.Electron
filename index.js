@@ -39,7 +39,7 @@ const listWindowCreator = () => {
         webPreferences: {
             nodeIntegration: true
         },
-        widht: 600,
+        width: 600,
         height: 400,
         title: "All Appointments"
     });
@@ -54,7 +54,7 @@ const createWindowCreator = () => {
         webPreferences: {
             nodeIntegration: true
         },
-        widht: 600,
+        width: 600,
         height: 400,
         title: "Create Appointments"
     });
@@ -68,20 +68,32 @@ ipcMain.on("appointment:create", (event, appointment) => {
     appointment["id"] = uuid();
     appointment["done"] = 0;
     allAppointment.push(appointment);
-
+    sendTodayAppointments();
     createWindow.close();
 
     console.log(allAppointment);
 });
 ipcMain.on("appointment:request:list", event => {
-    listWindow.webContents.send('appointment:response:list', allAppointment);
+    listWindow.webContents.send("appointment:response:list", allAppointment);
 });
 ipcMain.on("appointment:request:today", event => {
-    console.log("here2");
+    sendTodayAppointments();
 });
 ipcMain.on("appointment:done", (event, id) => {
-    console.log("here3");
+    allAppointment.forEach((appointment) => {
+        appointment.done = 1;
+    });
+
+    sendTodayAppointments();
+
 });
+
+const sendTodayAppointments = () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const filtered = allAppointment.filter((appointment) => appointment.date === today);
+
+    todayWindow.webContents.send("appointment:response:today", filtered);
+};
 
 const menuTemplate = [{
         label: "file",
@@ -100,7 +112,7 @@ const menuTemplate = [{
             },
             {
                 label: "Quit",
-                accelerator: process.platfrom === "darwin" ? "Command+Q" : "CTRL + Q",
+                accelerator: process.platform === "darwin" ? "Command+Q" : "CTRL + Q",
                 click() {
                     app.quit();
                 }
