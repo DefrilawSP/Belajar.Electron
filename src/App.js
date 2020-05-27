@@ -2,10 +2,10 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import Sidebar from "./components/Sidebar"
-import CreateAppointment from "./components/appointment/Create"
-import AppointmentList from "./components/appointment/List"
-import TodayAppointments from "./components/appointment/Today"
+import Sidebar from "./component/Sidebar"
+import CreateAppointment from "./component/appointment/Create"
+import AppointmentList from "./component/appointment/List"
+import TodayAppointments from "./component/appointment/Today"
 
 function App() {
   return (
